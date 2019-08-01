@@ -102,25 +102,22 @@ void Device::print(Window& window)
     // ... or not
     else
     {
+	int window_width = window.getWidth();
+	int graph_width = window_width < 80 ? window_width * 2 / 3 : window_width - 27;
         // incoming traffic
         window.print() << "Incoming:" << endl;
-        
-        m_deviceGraphIn.setNumOfBars(window.getWidth() * 2 / 3);
+        m_deviceGraphIn.setNumOfBars(graph_width);
         m_deviceGraphIn.setHeightOfBars((window.getHeight() - window.getY() - 1) / 2);
         m_deviceGraphIn.setMaxDeflection((unsigned long long) SettingStore::get("BarMaxIn") * 1024 / 8);
         m_deviceGraphIn.print(window, 0, window.getY());
-        
-        printStatisticsIn(window, window.getWidth() * 2 / 3 + 2, window.getY() - 5);
-        
+        printStatisticsIn(window, graph_width + 2, window.getY() - 5);
         // outgoing traffic
         window.print() << "Outgoing:" << endl;
-        
-        m_deviceGraphOut.setNumOfBars(window.getWidth() * 2 / 3);
+        m_deviceGraphOut.setNumOfBars(graph_width);
         m_deviceGraphOut.setHeightOfBars(window.getHeight() - window.getY());
         m_deviceGraphOut.setMaxDeflection((unsigned long long) SettingStore::get("BarMaxOut") * 1024 / 8);
         m_deviceGraphOut.print(window, 0, window.getY());
-        
-        printStatisticsOut(window, window.getWidth() * 2 / 3 + 2, window.getY() - 4);
+        printStatisticsOut(window, graph_width + 2, window.getY() - 4);
     }
 }
 
