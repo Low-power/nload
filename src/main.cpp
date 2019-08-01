@@ -101,6 +101,12 @@ int main(int argc, char *argv[])
     valueMapping[toString(Statistics::humanReadableByte)] = "Human Readable (Byte)";
     valueMapping[toString(Statistics::bit)] = "Bit";
     valueMapping[toString(Statistics::byte)] = "Byte";
+    valueMapping[toString(Statistics::kibiBit)] = "KiBit";
+    valueMapping[toString(Statistics::kibiByte)] = "KiByte";
+    valueMapping[toString(Statistics::mebiBit)] = "MiBit";
+    valueMapping[toString(Statistics::mebiByte)] = "MiByte";
+    valueMapping[toString(Statistics::gibiBit)] = "GiBit";
+    valueMapping[toString(Statistics::gibiByte)] = "GiByte";
     valueMapping[toString(Statistics::kiloBit)] = "kBit";
     valueMapping[toString(Statistics::kiloByte)] = "kByte";
     valueMapping[toString(Statistics::megaBit)] = "MBit";
@@ -216,10 +222,9 @@ int main(int argc, char *argv[])
             }
         }
         // has the user set a non-default unit for traffic numbers?
-        else if(strcmp(argv[i], "-u") == 0)
+        else if(strcmp(argv[i], "-u") == 0 || strcmp(argv[i], "-U") == 0)
         {
-            Setting& setting = SettingStore::get("TrafficFormat");
-            
+            Setting& setting = SettingStore::get(argv[i][1] == 'u' ? "TrafficFormat" : "DataFormat");
             if(i < argc - 1 && isalpha(argv[ i + 1 ][0]) != 0)
             {
                 switch(argv[ i + 1 ][0])
@@ -237,92 +242,77 @@ int main(int argc, char *argv[])
                         setting = Statistics::bit;
                         break;
                     case 'K':
-                        setting = Statistics::kiloByte;
+                        setting = Statistics::kibiByte;
                         break;
                     case 'k':
-                        setting = Statistics::kiloBit;
+                        setting = Statistics::kibiBit;
                         break;
                     case 'M':
-                        setting = Statistics::megaByte;
+                        setting = Statistics::mebiByte;
                         break;
                     case 'm':
-                        setting = Statistics::megaBit;
+                        setting = Statistics::mebiBit;
                         break;
                     case 'G':
-                        setting = Statistics::gigaByte;
+                        setting = Statistics::gibiByte;
                         break;
                     case 'g':
-                        setting = Statistics::gigaBit;
+                        setting = Statistics::gibiBit;
                         break;
                     default:
-                        cerr << "Wrong argument for the -u parameter." << endl;
+                        cerr << "Wrong argument for the " << argv[i] << " parameter." << endl;
                         printHelp(true);
                         exit(1);
                 }
+
+		switch(argv[i + 1][1]) {
+			case 0:
+				break;
+			case 'i':
+				// IEC, binary prefixes
+				break;
+			case 's':
+				switch((int)setting) {
+					case Statistics::humanReadableBit:
+						setting = Statistics::humanReadableSiBit;
+						break;
+					case Statistics::humanReadableByte:
+						setting = Statistics::humanReadableSiByte;
+						break;
+					case Statistics::kibiBit:
+						setting = Statistics::kiloBit;
+						break;
+					case Statistics::kibiByte:
+						setting = Statistics::kiloByte;
+						break;
+					case Statistics::mebiBit:
+						setting = Statistics::megaBit;
+						break;
+					case Statistics::mebiByte:
+						setting = Statistics::megaByte;
+						break;
+					case Statistics::gibiBit:
+						setting = Statistics::gigaBit;
+						break;
+					case Statistics::gibiByte:
+						setting = Statistics::gigaByte;
+						break;
+				}
+				break;
+			default:
+				cerr << "Wrong argument for the " << argv[i] << " parameter." << endl;
+				printHelp(true);
+				exit(1);
+		}
 
                 i++;
             }
             else
             {
-                cerr << "Wrong argument for the -u parameter." << endl;
+                cerr << "Wrong argument for the " << argv[i] << " parameter." << endl;
                 printHelp(true);
                 exit(1);
             }
-        }
-        // has the user set a non-default unit for numbers of amount of data?
-        else if(strcmp(argv[i], "-U") == 0)
-        {
-            Setting& setting = SettingStore::get("DataFormat");
-            
-            if(i < argc - 1 && isalpha(argv[ i + 1 ][0]) != 0)
-            {
-                switch(argv[ i + 1 ][0])
-                {
-                    case 'H':
-                        setting = Statistics::humanReadableByte;
-                        break;
-                    case 'h':
-                        setting = Statistics::humanReadableBit;
-                        break;
-                    case 'B':
-                        setting = Statistics::byte;
-                        break;
-                    case 'b':
-                        setting = Statistics::bit;
-                        break;
-                    case 'K':
-                        setting = Statistics::kiloByte;
-                        break;
-                    case 'k':
-                        setting = Statistics::kiloBit;
-                        break;
-                    case 'M':
-                        setting = Statistics::megaByte;
-                        break;
-                    case 'm':
-                        setting = Statistics::megaBit;
-                        break;
-                    case 'G':
-                        setting = Statistics::gigaByte;
-                        break;
-                    case 'g':
-                        setting = Statistics::gigaBit;
-                        break;
-                    default:
-                        cerr << "Wrong argument for the -U parameter." << endl;
-                        printHelp(true);
-                        exit(1);
-                }
-
-                i++;
-            }
-            else
-            {
-                cerr << "Wrong argument for the -U parameter." << endl;
-                printHelp(true);
-                exit(1);
-            }
-        
         }
         // has the user chosen to display multiple devices and thus not to display graphs?
         else if(strcmp(argv[i], "-m") == 0)
@@ -547,30 +537,34 @@ void printHelp(bool error)
         << "GNU General Public License Version 2 (http://www.gnu.org/copyleft/gpl.html).\n\n"
 
         << "Command line syntax:\n"
-        << PACKAGE << " [options] [devices]\n"
+        << PACKAGE << " [<options>] [<devices>]\n"
         << PACKAGE << " --help|-h\n\n"
 
         << "Options:\n"
-        << "-a period       Sets the length in seconds of the time window for average\n"
+        << "-a <period>     Sets the length in seconds of the time window for average\n"
         << "                calculation.\n"
         << "                Default is " << STANDARD_AVERAGE_WINDOW << ".\n"
-        << "-i max_scaling  Specifies the 100% mark in kBit/s of the graph indicating the\n"
+        << "-i <max_scaling>\n"
+	<< "                Specifies the 100% mark in KiBit/s of the graph indicating the\n"
         << "                incoming bandwidth usage. Ignored if max_scaling is 0 or the\n"
         << "                switch -m is given.\n"
         << "                Default is " << STANDARD_MAX_DEFLECTION << ".\n"
         << "-m              Show multiple devices at a time; no traffic graphs.\n"
-        << "-o max_scaling  Same as -i but for the graph indicating the outgoing bandwidth\n"
+        << "-o <max_scaling>\n"
+	<< "                Same as -i but for the graph indicating the outgoing bandwidth\n"
         << "                usage.\n"
         << "                Default is " << STANDARD_MAX_DEFLECTION << ".\n"
-        << "-t interval     Determines the refresh interval of the display in milliseconds.\n"
+        << "-t <interval>   Determines the refresh interval of the display in milliseconds.\n"
         << "                Default is " << STANDARD_REFRESH_INTERVAL << ".\n"
-        << "-u h|b|k|m|g    Sets the type of unit used for the display of traffic numbers.\n"
-        << "   H|B|K|M|G    h: auto, b: Bit/s, k: kBit/s, m: MBit/s etc.\n"
-        << "                H: auto, B: Byte/s, K: kByte/s, M: MByte/s etc.\n"
-        << "                Default is h.\n"
-        << "-U h|b|k|m|g    Same as -u, but for a total amount of data (without \"/s\").\n"
-        << "   H|B|K|M|G    Default is H.\n"
-        << "devices         Network devices to use.\n"
+        << "-u h|b|k|m|g|   Sets the type of unit used for the display of traffic numbers.\n"
+        << "   H|B|K|M|G    h: auto, b: Bit/s, k: KiBit/s, m: MiBit/s etc.\n"
+        << "   [i|s]        H: auto, B: Byte/s, K: KiByte/s, M: MiByte/s etc.\n"
+	<< "                i: IEC binary prefixes, s: Metric prefixes\n"
+        << "                Default is hi.\n"
+        << "-U h|b|k|m|g|   Same as -u, but for a total amount of data (without \"/s\").\n"
+        << "   H|B|K|M|G    Default is Hi.\n"
+	<< "   [i|s]\n"
+        << "<devices>       Network devices to use.\n"
         << "                Default is to use all auto-detected devices.\n"
         << "--help\n"
         << "-h              Print this help.\n\n"

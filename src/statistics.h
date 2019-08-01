@@ -26,25 +26,33 @@
 class Statistics
 {
     public:
-        enum dataUnit
+        enum DataUnit
         {
+            humanReadableSiBit = -4,
+            humanReadableSiByte = -3,
             humanReadableBit = -2,
             humanReadableByte = -1,
             bit = 0,
             byte = 1,
-            kiloBit = 2,
-            kiloByte = 3,
-            megaBit = 4,
-            megaByte = 5,
-            gigaBit = 6,
-            gigaByte = 7
+            kibiBit = 2,
+            kibiByte = 3,
+            mebiBit = 4,
+            mebiByte = 5,
+            gibiBit = 6,
+            gibiByte = 7,
+            kiloBit = 8,
+            kiloByte = 9,
+            megaBit = 10,
+            megaByte = 11,
+            gigaBit = 12,
+            gigaByte = 13
         };
         
         Statistics() {}
         ~Statistics() {}
 
-        static float getUnitFactor(dataUnit unit, unsigned long long value);
-        static std::string getUnitString(dataUnit unit, unsigned long long value);
+        static float getUnitFactor(DataUnit unit, unsigned long long value);
+        static std::string getUnitString(DataUnit unit, unsigned long long value);
         
         void insertDataFrame(const DataFrame& dataFrame);
         void reset();

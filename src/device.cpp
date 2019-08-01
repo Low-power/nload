@@ -170,7 +170,7 @@ unsigned long long Device::fixOverflow(unsigned long long value, unsigned long l
 
 void Device::printTrafficValue(Window& window, int x, int y, const std::string& description, unsigned long long value)
 {
-    Statistics::dataUnit trafficFormat = (Statistics::dataUnit) ((int) SettingStore::get("TrafficFormat"));
+    Statistics::DataUnit trafficFormat = (Statistics::DataUnit) ((int) SettingStore::get("TrafficFormat"));
 
     string unitString = Statistics::getUnitString(trafficFormat, value);
     float unitFactor = Statistics::getUnitFactor(trafficFormat, value);
@@ -180,7 +180,7 @@ void Device::printTrafficValue(Window& window, int x, int y, const std::string& 
 
 void Device::printDataValue(Window& window, int x, int y, const std::string& description, unsigned long long value)
 {
-    Statistics::dataUnit dataFormat = (Statistics::dataUnit) ((int) SettingStore::get("DataFormat"));
+    Statistics::DataUnit dataFormat = (Statistics::DataUnit) ((int) SettingStore::get("DataFormat"));
 
     string unitString = Statistics::getUnitString(dataFormat, value);
     float unitFactor = Statistics::getUnitFactor(dataFormat, value);
