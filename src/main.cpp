@@ -559,7 +559,7 @@ void printHelp(bool error)
         << "-u h|b|k|m|g|   Sets the type of unit used for the display of traffic numbers.\n"
         << "   H|B|K|M|G    h: auto, b: Bit/s, k: KiBit/s, m: MiBit/s etc.\n"
         << "   [i|s]        H: auto, B: Byte/s, K: KiByte/s, M: MiByte/s etc.\n"
-	<< "                i: IEC binary prefixes, s: Metric prefixes\n"
+	<< "                i: IEC binary prefixes, s: SI metric prefixes\n"
         << "                Default is hi.\n"
         << "-U h|b|k|m|g|   Same as -u, but for a total amount of data (without \"/s\").\n"
         << "   H|B|K|M|G    Default is Hi.\n"
