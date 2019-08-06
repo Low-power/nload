@@ -269,9 +269,10 @@ int main(int argc, char *argv[])
 			case 0:
 				break;
 			case 'i':
-				// IEC, binary prefixes
+				// IEC binary prefixes
 				break;
 			case 's':
+				// SI metric prefixes
 				switch((int)setting) {
 					case Statistics::humanReadableBit:
 						setting = Statistics::humanReadableSiBit;
