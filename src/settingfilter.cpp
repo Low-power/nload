@@ -94,7 +94,8 @@ void SettingFilterExclusive::filterRead(string& value)
 void SettingFilterExclusive::substituteExclusive(string& value)
 {
     if(value.find(m_exclusive + " ") == 0 ||
-       value.find(string(" ") + m_exclusive) == value.length() - (m_exclusive.length() + 1) ||
+       (value.length() > m_exclusive.length() &&
+        value.find(string(" ") + m_exclusive) == value.length() - (m_exclusive.length() + 1)) ||
        value.find(string(" ") + m_exclusive + " ") != string::npos
       )
         value = m_exclusive;
