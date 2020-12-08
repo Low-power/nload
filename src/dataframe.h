@@ -35,8 +35,8 @@ class DataFrame
         const std::string& getDeviceName() const { return m_deviceName; }
         void setDeviceName(const std::string& deviceName) { m_deviceName = deviceName; }
 
-        const std::string& getIpV4() const { return m_ipv4; }
-        void setIpV4(const std::string& ipv4) { m_ipv4 = ipv4; }
+        const std::string& getIpV4Address() const { return m_ipv4; }
+        void setIpV4Address(const std::string& ipv4) { m_ipv4 = ipv4; }
 
         unsigned long long getTotalDataIn() const { return m_totalDataIn; }
         void setTotalDataIn(unsigned long long totalDataIn) { m_totalDataIn = totalDataIn; }

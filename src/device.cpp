@@ -79,9 +79,9 @@ void Device::print(Window& window)
     }
     
     // print header
-    string ip4 = m_dataFrameOld.getIpV4();
-    if(!ip4.empty())
-        window.print() << "Device " << m_devReader.getDeviceName() << " [" << ip4 << "] (" << (m_deviceNumber + 1) << "/" << m_totalNumberOfDevices << "):" << endl;
+    string ip4addr = m_dataFrameOld.getIpV4Address();
+    if(!ip4addr.empty())
+        window.print() << "Device " << m_devReader.getDeviceName() << " [" << ip4addr << "] (" << (m_deviceNumber + 1) << "/" << m_totalNumberOfDevices << "):" << endl;
     else
         window.print() << "Device " << m_devReader.getDeviceName() << " (" << (m_deviceNumber + 1) << "/" << m_totalNumberOfDevices << "):" << endl;
     window.print() << string(window.getWidth(), '=');

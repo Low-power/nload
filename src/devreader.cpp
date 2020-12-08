@@ -64,7 +64,7 @@ DataFrame DevReader::getNewDataFrame()
     deviceData.setTimeStampSeconds((unsigned long) tv.tv_sec);
     deviceData.setTimeStampMicroseconds((unsigned long) tv.tv_usec);
 
-    deviceData.setIpV4(getDeviceIp4Address());
+    deviceData.setIpV4Address(getDeviceIp4Address());
 
     return deviceData;
 }
