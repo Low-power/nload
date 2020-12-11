@@ -36,6 +36,7 @@
 #include "device.h"
 #include "devreader.h"
 #include "devreaderfactory.h"
+#include "ibdevreaderfactory.h"
 #include "graph.h"
 #include "main.h"
 #include "screen.h"
@@ -63,6 +64,9 @@
 #define STANDARD_MAX_DEFLECTION 10240
 #define STANDARD_REFRESH_INTERVAL 500
 #define STANDARD_TRAFFIC_FORMAT Statistics::humanReadableBit
+
+#define DEVICE_TYPE_DEFAULT 0
+#define DEVICE_TYPE_INFINIBAND 1
 
 using namespace std;
 
@@ -131,6 +135,8 @@ int main(int argc, char *argv[])
     SettingStore::readFromFile(SYSCONFDIR "/nload.conf");
     SettingStore::readFromFile(homeDir + "/.nload");
 
+	int dev_type = DEVICE_TYPE_DEFAULT;
+
     // parse the command line
     bool deleteDevicesRequested = true;
     for(int i = 1; i < argc; i++)
@@ -145,7 +151,7 @@ int main(int argc, char *argv[])
         else if(strcmp(argv[i], "-a") == 0)
         {
             Setting& setting = SettingStore::get("AverageWindow");
-            
+
             if(i < argc - 1 && isdigit(argv[ i + 1 ][0]) != 0)
             {
                 setting = atoi(argv[ i + 1 ]);
@@ -330,6 +336,21 @@ int main(int argc, char *argv[])
         else if(strcmp(argv[i], "-s") == 0)
         {
         }
+		else if(strcmp(argv[i], "-d") == 0) {
+			if(argc <= ++i) {
+				cerr << "Option '-d' requires an argument." << endl;
+				exit(1);
+			}
+			if(strcmp(argv[i], "default") == 0 || strcmp(argv[i], "net") == 0) {
+				dev_type = DEVICE_TYPE_DEFAULT;
+			} else if(strcmp(argv[i], "infiniband") == 0 || strcmp(argv[i], "ib") == 0) {
+				dev_type = DEVICE_TYPE_INFINIBAND;
+			} else {
+				cerr << "Wrong argument for the '-d' option." << endl;
+				exit(1);
+			}
+
+		}
         // assume unknown parameter to be the network device
         else
         {
@@ -346,8 +367,18 @@ int main(int argc, char *argv[])
     }
 
     // auto-detect network devices
-    DevReaderFactory::findAllDevices();
-    const map<string, DevReader*>& deviceReaders = DevReaderFactory::getAllDevReaders();
+	map<string, DevReader *> deviceReaders;
+	if(dev_type == DEVICE_TYPE_INFINIBAND) {
+		InfiniBandDevReaderFactory::findAllDevices();
+		deviceReaders = InfiniBandDevReaderFactory::getAllDevReaders();
+	} else {
+		DevReaderFactory::findAllDevices();
+		deviceReaders = DevReaderFactory::getAllDevReaders();
+	}
+	if(deviceReaders.empty()) {
+		cerr << "Cannot find any suitable devices." << endl;
+		exit(1);
+	}
 
     // create one instance of the Device class per device
     map<string, Device*> deviceHandlers;
@@ -547,6 +578,8 @@ void printHelp(bool error)
         << "-a <period>     Sets the length in seconds of the time window for average\n"
         << "                calculation.\n"
         << "                Default is " << STANDARD_AVERAGE_WINDOW << ".\n"
+        << "-d net|ib       Selects device class.\n"
+        << "                Default is net.\n"
         << "-i <max_scaling>\n"
 	<< "                Specifies the 100% mark in KiBit/s of the graph indicating the\n"
         << "                incoming bandwidth usage. Ignored if max_scaling is 0 or the\n"
