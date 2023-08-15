@@ -74,8 +74,8 @@ static bool quit = false;
 int main(int argc, char *argv[])
 {
     SettingStore::add(Setting("AverageWindow", "Window length for average (s)", STANDARD_AVERAGE_WINDOW));
-    SettingStore::add(Setting("BarMaxIn", "Max Incoming deflection (kBit/s)", STANDARD_MAX_DEFLECTION));
-    SettingStore::add(Setting("BarMaxOut", "Max Outgoing deflection (kBit/s)", STANDARD_MAX_DEFLECTION));
+    SettingStore::add(Setting("BarMaxIn", "Max Incoming deflection (KiBit/s)", STANDARD_MAX_DEFLECTION));
+    SettingStore::add(Setting("BarMaxOut", "Max Outgoing deflection (KiBit/s)", STANDARD_MAX_DEFLECTION));
     SettingStore::add(Setting("DataFormat", "Unit for data numbers", STANDARD_DATA_FORMAT));
     SettingStore::add(Setting("Devices", "Devices to show", "all"));
     SettingStore::add(Setting("MultipleDevices", "Show multiple devices", STANDARD_HIDE_GRAPHS));
