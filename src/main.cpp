@@ -97,8 +97,10 @@ int main(int argc, char *argv[])
     SettingStore::get("MultipleDevices").pushFilter(new SettingFilterMap(valueMapping));
     valueMapping.clear();
 
-    valueMapping[toString(Statistics::humanReadableBit)] = "Human Readable (Bit)";
-    valueMapping[toString(Statistics::humanReadableByte)] = "Human Readable (Byte)";
+    valueMapping[toString(Statistics::humanReadableBit)] = "Human Readable (Binary Bit)";
+    valueMapping[toString(Statistics::humanReadableByte)] = "Human Readable (Binary Byte)";
+    valueMapping[toString(Statistics::humanReadableSiBit)] = "Human Readable (Decimal Bit)";
+    valueMapping[toString(Statistics::humanReadableSiByte)] = "Human Readable (Decimal Byte)";
     valueMapping[toString(Statistics::bit)] = "Bit";
     valueMapping[toString(Statistics::byte)] = "Byte";
     valueMapping[toString(Statistics::kibiBit)] = "KiBit";
