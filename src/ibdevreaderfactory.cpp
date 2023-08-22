@@ -46,9 +46,11 @@ InfiniBandDevReaderFactory::~InfiniBandDevReaderFactory()
 int InfiniBandDevReaderFactory::findAllDevices()
 {
 #if defined HAVE_BSD
+    list<string> interfaceNames = list<string>();
 #elif defined HAVE_LINUX
     list<string> interfaceNames = LinuxSysFsInfiniBandDevReader::findAllDevices();
 #elif defined HAVE_SOLARIS
+    list<string> interfaceNames = list<string>();
 #endif
 
     map<string, DevReader*>::iterator devReaderIt = m_devReaders.begin();
